@@ -16,7 +16,7 @@ const products = express.Router();
 // http://localhost:8080/api/product
 products.get("/", getAll);
 
-products.post("/", isLogin(), imageUpload.single("image"), create);
+products.post("/", imageUpload.single("image"), create);
 
 products.patch("/:id", edit);
 

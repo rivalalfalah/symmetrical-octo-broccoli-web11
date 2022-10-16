@@ -13,32 +13,15 @@ const getAllPromos = () => {
   });
 };
 
-const createPromos = (body) => {
+const createPromos = (body, file) => {
   return new Promise((resolve, reject) => {
     const query =
-      "insert into promos(promos_name,product_id,diskon,min_order,max_price,start_promos,end_promos,detail) values ($1,$2,$3,$4,$5,$6,$7,$8)";
-    const {
-      ["promos_name"]: promosName,
-      ["Product_id"]: productId,
-      diskon,
-      ["min_order"]: minOrder,
-      ["max_price"]: maxPrice,
-      ["start_promos"]: startPromos,
-      ["end_promos"]: endPromos,
-      detail,
-    } = body;
+      "insert into products(name,category_id,size_id,price,image,stock,description) values ($1,$2,$3,$4,$5,$6,$7)";
+    const { name, category_id, size_id, price, stock, description } = body;
+    // const { image } = file;
     postgreDB.query(
       query,
-      [
-        promosName,
-        productId,
-        diskon,
-        minOrder,
-        maxPrice,
-        startPromos,
-        endPromos,
-        detail,
-      ],
+      [name, category_id, size_id, price, file, stock, description],
       (err, queryResult) => {
         if (err) {
           console.log(err);
