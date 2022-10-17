@@ -85,6 +85,19 @@ const getSort = async (req, res) => {
   }
 };
 
+const getPagination = async (req, res) => {
+  try {
+    // console.log(req.query);
+    const response = await productsRepo.getProductsPagination(req.query);
+    res.status(200).json({
+      result: response.rows,
+    });
+  } catch (err) {
+    res.status(500).json({
+      msg: "internal server error",
+    });
+  }
+};
 const transactionController = {
   getAll,
   create,
@@ -93,6 +106,7 @@ const transactionController = {
   getCategory,
   getSearch,
   getSort,
+  getPagination,
 };
 
 module.exports = transactionController;

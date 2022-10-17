@@ -16,12 +16,12 @@ const getAllPromos = () => {
 const createPromos = (body, file) => {
   return new Promise((resolve, reject) => {
     const query =
-      "insert into products(name,category_id,size_id,price,image,stock,description) values ($1,$2,$3,$4,$5,$6,$7)";
-    const { name, category_id, size_id, price, stock, description } = body;
-    // const { image } = file;
+      "insert into promos(name,products_id,diskon,start,finished,image,detail) values ($1,$2,$3,$4,$5,$6,$7)";
+    const { name, products_id, diskon, start, finished, detail } = body;
+    //const { image } = file;
     postgreDB.query(
       query,
-      [name, category_id, size_id, price, file, stock, description],
+      [name, products_id, diskon, start, finished, file, detail],
       (err, queryResult) => {
         if (err) {
           console.log(err);
@@ -37,11 +37,10 @@ const editPromos = (body, params) => {
   return new Promise((resolve, reject) => {
     let query = "update promos set ";
     const values = [];
-
     Object.keys(req.body).forEach((key, idx, array) => {
       if (idx === array.length - 1) {
-        query += `${key} = $${idx + 1} where promos_id = $${idx + 2}`;
-        values.push(body[key], params.promos_id);
+        query += `${key} = $${idx + 1} where id = $${idx + 2}`;
+        values.push(body[key], params.id);
         return;
       }
       query += `${key} = $${idx + 1},`;
@@ -78,7 +77,8 @@ const dropPromos = (params) => {
 
 const getSearch = (params) => {
   return new Promise((resolve, reject) => {
-    const query = "select * from promos where lower(name) LIKE upper($1) ";
+    const query =
+      "select promos.name,products.name,promos.diskon,promos.start,promos.finished,promos.image,promos.detail from promos inner join products on promos.products_id = products.id where lower(promos.name) LIKE upper($1) ";
     const { name } = params;
     postgreDB.query(query, [`%$${name}%`], (err, result) => {
       if (err) {

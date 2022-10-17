@@ -6,17 +6,18 @@ const {
   getAll,
   getSearch,
 } = require("../controllers/promos");
+const imageUpload = require("../middlewares/upload");
 
 const promos = express.Router();
 
 // http://localhost:8080/api/product
 promos.get("/", getAll);
 
-promos.post("/", create);
+promos.post("/", imageUpload.single("image"), create);
 
-promos.patch("/:promos_id", edit);
+promos.patch("/:id", imageUpload.single("image"), edit);
 
-promos.delete("/:promos_id", drop);
+promos.delete("/:id", drop);
 
 promos.get("/search", getSearch);
 

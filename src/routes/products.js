@@ -6,6 +6,7 @@ const {
   getAll,
   getCategory,
   getSearch,
+  getPagination,
 } = require("../controllers/products");
 const { getSort } = require("../repo/products");
 const imageUpload = require("../middlewares/upload");
@@ -16,7 +17,7 @@ const products = express.Router();
 // http://localhost:8080/api/product
 products.get("/", getAll);
 
-products.post("/", imageUpload.single("image"), create);
+products.post("/", isLogin(), imageUpload.single("image"), create);
 
 products.patch("/:id", edit);
 
@@ -27,5 +28,7 @@ products.get("/p/:category_product", getCategory);
 products.get("/search", getSearch);
 
 products.get("/sort", getSort);
+
+products.get("/pagination", getPagination);
 
 module.exports = products;

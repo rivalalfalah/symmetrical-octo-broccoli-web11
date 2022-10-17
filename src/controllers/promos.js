@@ -15,10 +15,10 @@ const getAll = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    console.log(req.body);
-    const response = promosRepo.createPromos(req.body);
+    const response = await promosRepo.createPromos(req.body, req.file.path);
+    //console.log(req.file.path);
     res.status(201).json({
-      result: response,
+      result: "promo created",
     });
   } catch (error) {
     return res.status(500).json({ msg: "internal server error" });
@@ -27,9 +27,13 @@ const create = async (req, res) => {
 
 const edit = async (req, res) => {
   try {
-    const response = await promosRepo.editPromos(req.body, req.params);
+    const response = await promosRepo.editPromos(
+      req.body,
+      req.params,
+      req.file.path
+    );
     res.status(200).json({ result: response });
-  } catch (error) {
+  } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "internal server error" });
   }

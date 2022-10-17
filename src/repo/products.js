@@ -126,6 +126,51 @@ const getSort = (params) => {
   });
 };
 
+const getProductsPagination = (queryParams) => {
+  return new Promise((resolve, reject) => {
+    // const bookSchema = {
+    //   table: "books",
+    //   alias: "b",
+    //   column: {
+    //     id: "number",
+    //     title: "string",
+    //     author: "string",
+    //     publisher: "string",
+    //     genre: "string",
+    //     published_date: "date",
+    //   },
+    // };
+    // asumsi query params selalu berisi title dan author
+    let query = "select name, price,image,description from products p ";
+    const values = [];
+    const whereParams = Object.keys(queryParams).filter((key) =>
+      ["name"].includes(key)
+    );
+    if (whereParams.length > 0) query += "where ";
+    whereParams.forEach((key) => {
+      if (values.length > 0) query += "and ";
+      query += `lower(p.${key}) like lower('%' || $${
+        values.length + 1
+      } || '%') `;
+      values.push(String(queryParams[key]));
+    });
+    console.log(values);
+    // paginasi biasanya diwakili dengan query page dan limit
+    const page = Number(queryParams.page);
+    const limit = Number(queryParams.limit);
+    const offset = (page - 1) * limit;
+    query += `limit $${values.length + 1} offset $${values.length + 2}`;
+    values.push(limit, offset);
+    postgreDB.query(query, values, (err, result) => {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+      return resolve(result);
+    });
+  });
+};
+
 const productsRepo = {
   getAllProducts,
   createProducts,
@@ -134,6 +179,7 @@ const productsRepo = {
   getCategoryProducts,
   getSearch,
   getSort,
+  getProductsPagination,
 };
 
 module.exports = productsRepo;
